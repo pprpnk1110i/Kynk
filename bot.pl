@@ -8,6 +8,7 @@ my $port = "6667";
 my $nick = "kazi-bot";
 my $room = "#kazi";
 my $room2 = "#botters";
+my $nick2 = "kazibot";
 print "[$ts] Connecting to IRC..\n";
 
 my $conn = $irc->newconn(Server => $server,
@@ -48,9 +49,13 @@ sub on_public {
           if ("say" eq $command) {
           $conn->privmsg(@to, $remaining_parameters);
           }
-
+          if ("nick" eq $command){ if($event->host eq "c-68-53-131-117.hsd1.tn.comcast.net"){ 
+          $conn->nick($remaining_parameters);  } else {
+          $conn->privmsg(@to, $event->nick,": You cannot access that command!");
+          }
+          }
           if ("commands" eq $command){ if($event->host eq "c-68-53-131-117.hsd1.tn.comcast.net"){ 
-          $conn->privmsg(@to, $event->nick,": about, commands, join, part, quit, say");  } else {
+          $conn->privmsg(@to, $event->nick,": about, commands, join, nick, part, quit, say");  } else {
           $conn->privmsg(@to, $event->nick,": about, commands, say");
           }
           }
@@ -88,7 +93,7 @@ sub on_msg {
  
 sub on_nick_taken {
     my ($self) = shift;
-    $self->nick("kazi-bot2");
+    $self->nick($nick2);
 }
 sub on_join {
 	my ($conn, $event) = @_;
