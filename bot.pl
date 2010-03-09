@@ -3,12 +3,15 @@ use Net::IRC;
 
 my $ts = localtime;
 my $irc = new Net::IRC;
+my $adminhost = "c-68-53-131-117.hsd1.tn.comcast.net";
 my $server = "irc.freenode.net";
 my $port = "6667";
-my $nick = "kazi-bot";
+my $nick = "Kynk";
+my $idnick = $nick;
 my $room = "#kazi";
 my $room2 = "#botters";
-my $nick2 = "kazibot";
+my $nick2 = "kazi-bot";
+my $trigger = qr/\./;
 print "[$ts] Connecting to IRC..\n";
 
 my $conn = $irc->newconn(Server => $server,
@@ -39,39 +42,46 @@ sub on_public {
     my $host=$event->host;
     my ($arg) = ($event->args);
     print "[$ts][@to][$nick] $arg\n";
-     if ($arg =~ /^!([^ ]+)(?: (.+))?/) {
+     if ($arg =~ /^$trigger([^ ]+)(?: (.+))?/) {
         my $command = $1;
         my $remaining_parameters = $2;
 
           if ("about" eq $command) {
-          $conn->privmsg(@to, $event->nick, ": Running Kynk 0.1 RC.");
+          $conn->privmsg(@to, $event->nick, ": Running Kynk 0.2 Alpha by kazimiya.");
           }
           if ("say" eq $command) {
           $conn->privmsg(@to, $remaining_parameters);
           }
-          if ("nick" eq $command){ if($event->host eq "c-68-53-131-117.hsd1.tn.comcast.net"){ 
+          if ("nick" eq $command){ if($event->host eq $adminhost){ 
           $conn->nick($remaining_parameters);  } else {
           $conn->privmsg(@to, $event->nick,": You cannot access that command!");
           }
           }
-          if ("commands" eq $command){ if($event->host eq "c-68-53-131-117.hsd1.tn.comcast.net"){ 
-          $conn->privmsg(@to, $event->nick,": about, commands, join, nick, part, quit, say");  } else {
+          if ("identify" eq $command){ if($event->host eq $adminhost){ 
+          $conn->privmsg("nickserv", "identify onetwo"); 
+          $conn->privmsg(@to, "Now identified for $idnick.");
+          } else {
+          $conn->privmsg(@to, $event->nick,": You cannot access that command!");
+          }
+          }
+          if ("commands" eq $command){ if($event->host eq $adminhost){ 
+          $conn->privmsg(@to, $event->nick,": about, commands, identify, join, nick, part, quit, say");  } else {
           $conn->privmsg(@to, $event->nick,": about, commands, say");
           }
           }
-          if ("quit" eq $command){ if($event->host eq "c-68-53-131-117.hsd1.tn.comcast.net"){ 
-          $conn->privmsg(@to, $event->nick,": Closing.."); $conn->quit("Requested."); exit();        } else {
+          if ("quit" eq $command){ if($event->host eq $adminhost){ 
+          $conn->privmsg(@to, $event->nick,": Closing.."); $conn->quit("Requested by owner."); exit();        } else {
           $conn->privmsg(@to, $event->nick,": You cannot access that command!");
           }
           }
           
-          if ("part" eq $command){ if($event->host eq "c-68-53-131-117.hsd1.tn.comcast.net"){ 
+          if ("part" eq $command){ if($event->host eq $adminhost){ 
           $conn->part($remaining_parameters); } else {
           $conn->privmsg(@to, $event->nick,": You cannot access that command!");
           }
           }
 
-          if ("join" eq $command){ if($event->host eq "c-68-53-131-117.hsd1.tn.comcast.net"){ 
+          if ("join" eq $command){ if($event->host eq $adminhost){ 
           $conn->join($remaining_parameters);  } else {
           $conn->privmsg(@to, $event->nick,": You cannot access that command!");
           }
